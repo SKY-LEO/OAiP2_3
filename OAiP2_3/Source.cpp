@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ctime>
+#include <conio.h>
 
 using namespace std;
 
@@ -9,24 +10,32 @@ struct Queue
 	Queue* prev, * next;
 };
 
-void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start = true);
-Queue* viewQueue(Queue* begin);
+void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start);
+Queue* viewQueue(Queue* begin, Queue* end, bool is_from_end);
 Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max);
 Queue* individualTask2(Queue*& begin, Queue*& end, int& max_number);
 void createQueue(Queue*& begin, Queue*& end, int number);
 void deleteQueue(Queue*& begin);
-void fillQueue(Queue*& begin, Queue*& end, bool is_random = false, bool is_new = false);
+void fillQueue(Queue*& begin, Queue*& end, bool is_new = false);
 bool isCorrectTask(Queue*& begin, Queue*& max, int& max_number);
 int popQueue(Queue*& begin, Queue*& end);
 int correctInputInt();
 
 int main()
 {
-	Queue* begin = NULL, * end = NULL, * max = NULL, * new_Queue = NULL, *new_Queue_end = NULL;
+	Queue* begin = NULL, * end = NULL, * max = NULL, * new_Queue = NULL, * new_Queue_end = NULL;
 	int max_number;
+	char symbol;
+	bool is_from_end = true;
+	cout << "Do you want to see queue from the start?(Y/N)" << endl;
+	symbol = _getch();
+	if (symbol == 'Y' || symbol == 'y')
+	{
+		is_from_end = false;
+	}
 	while (true)
 	{
-		int code = 0;
+		int code = 0, variable = 0;
 		do
 		{
 			cout << "\n Create - 1\n Add - 2\n Individual task_variant1 - 3\n Individual task_variant2 - 4\n View Queue - 5\n Delete Queue - 6\n EXIT - 0\n";
@@ -41,16 +50,20 @@ int main()
 				cout << "Delete previous Queue" << endl;
 				deleteQueue(begin);
 			}
-			do
-			{
-				cout << "How you want to fill Queue? \n By random - 1\n By keyboard - 2\n";
-				code = correctInputInt();
-			} while (code < 1 || code > 2);
 			switch (code)
 			{
-			case 1: fillQueue(begin, end, true, true);
+			case 1: fillQueue(begin, end, true);
 				continue;
-			case 2: fillQueue(begin, end);
+			case 2:
+				if (begin)
+				{
+					fillQueue(begin, end);
+				}
+				else
+				{
+					cout << "There is no queue! Created new" << endl;
+					fillQueue(begin, end, true);
+				}
 				continue;
 			}
 			break;
@@ -67,16 +80,16 @@ int main()
 					new_Queue = individualTask2(begin, new_Queue_end, max_number);
 				}
 				cout << "New Queue:" << endl;
-				viewQueue(new_Queue);
+				viewQueue(new_Queue, new_Queue_end, is_from_end);
 				cout << "Old Queue:" << endl;
-				viewQueue(begin);
+				viewQueue(begin, end, is_from_end);
 			}
 			else
 			{
 				cout << "Bad Queue, nothing interesting!" << endl;
 			}
 			break;
-		case 5: viewQueue(begin);
+		case 5: viewQueue(begin, end, is_from_end);
 			break;
 		case 6:
 			if (begin) deleteQueue(begin);
@@ -92,9 +105,29 @@ int main()
 	}
 }
 
-void fillQueue(Queue*& begin, Queue*& end, bool is_random, bool is_new)
+void fillQueue(Queue*& begin, Queue*& end, bool is_new)
 {
-	int n, number, i = 0;
+	int n, number, code, temp, i = 0;
+	bool is_start = true;
+	bool is_random = false;
+	do
+	{
+		cout << "How do you want to fill Queue? \n By random - 1\n By keyboard - 2\n";
+		temp = correctInputInt();
+	} while (temp < 1 || temp > 2);
+	if (temp == 1)
+	{
+		is_random = true;
+	}
+	do
+	{
+		cout << "How do you want to fill the queue? \n From the start - 1\n From the end - 2\n";
+		code = correctInputInt();
+	} while (code < 1 || code > 2);
+	if (code == 2)
+	{
+		is_start = false;
+	}
 	do
 	{
 		cout << "How many?" << endl;
@@ -122,10 +155,10 @@ void fillQueue(Queue*& begin, Queue*& end, bool is_random, bool is_new)
 			createQueue(begin, end, number);
 			i++;
 		}
-		for (i; i < n; i++)//?
+		for (i; i < n; i++)
 		{
 			number = rand() % (max - min + 1) + min;
-			pushQueue(begin, end, number);
+			pushQueue(begin, end, number, is_start);
 		}
 	}
 	else
@@ -141,7 +174,7 @@ void fillQueue(Queue*& begin, Queue*& end, bool is_random, bool is_new)
 		{
 			cout << "Enter number: " << endl;
 			number = correctInputInt();
-			pushQueue(begin, end, number);
+			pushQueue(begin, end, number, is_start);
 		}
 	}
 }
@@ -159,8 +192,18 @@ Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max)
 {
 	Queue* new_Queue = NULL;
 	Queue* temp = begin->next;
-	int variable;
+	int variable, code;
 	bool first = true;
+	bool is_start = true;
+	do
+	{
+		cout << "How do you want to sort the queue? \n From the start - 1\n From the end - 2\n";
+		code = correctInputInt();
+	} while (code < 1 || code > 2);
+	if (code == 2)
+	{
+		is_start = false;
+	}
 	while (temp != max)
 	{
 		variable = popQueue(temp, end);
@@ -171,7 +214,7 @@ Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max)
 		}
 		else
 		{
-			pushQueue(new_Queue, end, variable);
+			pushQueue(new_Queue, end, variable, is_start);
 		}
 	}
 	return new_Queue;
@@ -181,8 +224,18 @@ Queue* individualTask2(Queue*& begin, Queue*& end, int& max_number)
 {
 	Queue* new_Queue = NULL;
 	Queue* temp = begin->next;
-	int variable;
+	int variable, code;
 	bool first = true;
+	bool is_start = true;
+	do
+	{
+		cout << "How do you want to sort the queue? \n From the start - 1\n From the end - 2\n";
+		code = correctInputInt();
+	} while (code < 1 || code > 2);
+	if (code == 2)
+	{
+		is_start = false;
+	}
 	while (temp->number < max_number)
 	{
 		variable = popQueue(temp, end);
@@ -193,7 +246,7 @@ Queue* individualTask2(Queue*& begin, Queue*& end, int& max_number)
 		}
 		else
 		{
-			pushQueue(new_Queue, end, variable);
+			pushQueue(new_Queue, end, variable, is_start);
 		}
 	}
 	return new_Queue;
@@ -270,13 +323,26 @@ int popQueue(Queue*& begin, Queue*& end)//по адресу
 	return out;
 }
 
-Queue* viewQueue(Queue* begin)
+Queue* viewQueue(Queue* begin, Queue* end, bool is_from_end)
 {
-	if (begin)
+	if (is_from_end)
 	{
-		cout << begin->number << "\t";
-		begin = begin->next;
-		return viewQueue(begin);
+		if (end)
+		{
+			cout << end->number << '\t';
+			end = end->prev;
+			return viewQueue(begin, end, is_from_end);
+		}
+	}
+	else
+	{
+		if (begin)
+		{
+			cout << begin->number << '\t';
+			begin = begin->next;
+			return viewQueue(begin, end, is_from_end);
+		}
+
 	}
 	cout << endl;
 	return begin;
