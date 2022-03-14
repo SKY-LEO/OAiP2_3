@@ -348,10 +348,9 @@ Queue* viewQueue(Queue* begin, Queue* end, bool is_from_end)
 
 void deleteQueue(Queue*& begin)//по адресу
 {
-	Queue* temp;
 	while (begin)
 	{
-		temp = begin;
+		Queue* temp = begin;
 		begin = begin->next;
 		delete temp;
 	}
