@@ -24,8 +24,7 @@ int correctInputInt();
 int main()
 {
 	Queue* begin = NULL, * end = NULL, * max = NULL, * new_Queue = NULL, * new_Queue_end = NULL;
-	int max_number;
-	char symbol;
+	int max_number, symbol;
 	bool is_from_end = true;
 	cout << "Do you want to see queue from the start?(Y/N)" << endl;
 	symbol = _getch();
@@ -35,7 +34,7 @@ int main()
 	}
 	while (true)
 	{
-		int code = 0, variable = 0;
+		int code;
 		do
 		{
 			cout << "\n Create - 1\n Add - 2\n Individual task_variant1 - 3\n Individual task_variant2 - 4\n View Queue - 5\n Delete Queue - 6\n EXIT - 0\n";
@@ -66,7 +65,6 @@ int main()
 				}
 				continue;
 			}
-			break;
 		case 3:
 		case 4:
 			if (isCorrectTask(begin, max, max_number))
@@ -144,10 +142,9 @@ void fillQueue(Queue*& begin, Queue*& end, bool is_new)
 		if (min > max)
 		{
 			cout << "Min > Max, swap them!" << endl;
-			int temp;
-			temp = min;
+			int variable = min;
 			min = max;
-			max = temp;
+			max = variable;
 		}
 		if (is_new)
 		{
@@ -186,6 +183,7 @@ void createQueue(Queue*& begin, Queue*& end, int number)
 	temp->next = temp->prev = NULL;
 	begin = temp;
 	end = temp;
+	delete temp;
 }
 
 Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max)
@@ -300,6 +298,7 @@ void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start)
 		end->next = temp;
 		end = temp;
 	}
+	delete temp;
 }
 
 int popQueue(Queue*& begin, Queue*& end)//по адресу
@@ -311,14 +310,12 @@ int popQueue(Queue*& begin, Queue*& end)//по адресу
 		Queue* temp = begin;
 		(begin->next)->prev = begin->prev;
 		begin = (begin->prev)->next = begin->next;
-		delete temp;
 	}
 	else
 	{
 		Queue* temp = end;
 		end = end->prev;
 		end->next = NULL;
-		delete temp;
 	}
 	return out;
 }
@@ -355,9 +352,8 @@ void deleteQueue(Queue*& begin)//по адресу
 	{
 		temp = begin;
 		begin = begin->next;
-		delete temp;
 	}
-	cout << "Queue deleted succesfully" << endl;
+	cout << "Queue deleted successfully" << endl;
 }
 
 int correctInputInt()
