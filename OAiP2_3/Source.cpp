@@ -309,12 +309,14 @@ int popQueue(Queue*& begin, Queue*& end)//по адресу
 		temp = begin;
 		(begin->next)->prev = begin->prev;
 		begin = (begin->prev)->next = begin->next;
+		delete temp;
 	}
 	else
 	{
 	    temp = end;
 		end = end->prev;
 		end->next = NULL;
+		delete temp;
 	}
 	return out;
 }
@@ -351,6 +353,7 @@ void deleteQueue(Queue*& begin)//по адресу
 	{
 		temp = begin;
 		begin = begin->next;
+		delete temp;
 	}
 	cout << "Queue deleted succesfully" << endl;
 }
