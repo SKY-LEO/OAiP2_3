@@ -183,7 +183,6 @@ void createQueue(Queue*& begin, Queue*& end, int number)
 	temp->next = temp->prev = NULL;
 	begin = temp;
 	end = temp;
-	delete temp;
 }
 
 Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max)
@@ -298,22 +297,22 @@ void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start)
 		end->next = temp;
 		end = temp;
 	}
-	delete temp;
 }
 
 int popQueue(Queue*& begin, Queue*& end)//по адресу
 {
+	Queue* temp;
 	int out;
 	out = begin->number;
 	if (begin != end)
 	{
-		Queue* temp = begin;
+		temp = begin;
 		(begin->next)->prev = begin->prev;
 		begin = (begin->prev)->next = begin->next;
 	}
 	else
 	{
-		Queue* temp = end;
+	    temp = end;
 		end = end->prev;
 		end->next = NULL;
 	}
@@ -353,7 +352,7 @@ void deleteQueue(Queue*& begin)//по адресу
 		temp = begin;
 		begin = begin->next;
 	}
-	cout << "Queue deleted successfully" << endl;
+	cout << "Queue deleted succesfully" << endl;
 }
 
 int correctInputInt()
