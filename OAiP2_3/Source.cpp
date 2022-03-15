@@ -10,10 +10,10 @@ struct Queue
 	Queue* prev, * next;
 };
 
-void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start);
 Queue* viewQueue(Queue* start, bool is_from_end = true);
-Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max);
-Queue* individualTask2(Queue*& begin, Queue*& end, int& max_number);
+Queue* individualTask1(Queue*& begin, Queue*& new_Queue_end, Queue*& max);
+Queue* individualTask2(Queue*& begin, Queue*& new_Queue_end, int& max_number);
+void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start);
 void createQueue(Queue*& begin, Queue*& end, int number);
 void deleteQueue(Queue*& begin);
 void fillQueue(Queue*& begin, Queue*& end, bool is_new = false);
@@ -190,39 +190,18 @@ void createQueue(Queue*& begin, Queue*& end, int number)
 	end = temp;
 }
 
-Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max)//переделать на изменение связей
+Queue* individualTask1(Queue*& begin, Queue*& new_Queue_end, Queue*& max)//переделать на изменение связей
 {
-	Queue* new_Queue = NULL;
-	Queue* temp = begin->next;
-	int variable;
-	bool first = true;
-	//bool is_start = true;
-	//do
-	//{
-		//cout << "How do you want to sort the queue? \n From the start - 1\n From the end - 2\n";
-		//code = correctInputInt();
-	//} while (code < 1 || code > 2);
-	//if (code == 2)
-	//{
-		//is_start = false;
-	//}
-	while (temp != max)
-	{
-		variable = popQueue(temp, end);
-		if (first)
-		{
-			createQueue(new_Queue, end, variable);
-			first = false;
-		}
-		else
-		{
-			pushQueue(new_Queue, end, variable, true);
-		}
-	}
+	Queue* new_Queue = begin->next;
+	new_Queue->prev = NULL;
+	begin->next = max;
+	new_Queue_end = max->prev;
+	new_Queue_end->next = NULL;
+	max->prev = begin;
 	return new_Queue;
 }
 
-Queue* individualTask2(Queue*& begin, Queue*& end, int& max_number)
+Queue* individualTask2(Queue*& begin, Queue*& new_Queue_end, int& max_number)
 {
 	Queue* new_Queue = NULL;
 	Queue* temp = begin->next;
@@ -240,15 +219,15 @@ Queue* individualTask2(Queue*& begin, Queue*& end, int& max_number)
 	}
 	while (temp->number < max_number)
 	{
-		variable = popQueue(temp, end);
+		variable = popQueue(temp, new_Queue_end);
 		if (first)
 		{
-			createQueue(new_Queue, end, variable);
+			createQueue(new_Queue, new_Queue_end, variable);
 			first = false;
 		}
 		else
 		{
-			pushQueue(new_Queue, end, variable, is_start);
+			pushQueue(new_Queue, new_Queue_end, variable, is_start);
 		}
 	}
 	return new_Queue;
