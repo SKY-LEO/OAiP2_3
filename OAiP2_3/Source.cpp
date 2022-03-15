@@ -11,7 +11,7 @@ struct Queue
 };
 
 void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start);
-Queue* viewQueue(Queue* begin, Queue* end, bool is_from_end);
+Queue* viewQueue(Queue* start, bool is_from_end = true);
 Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max);
 Queue* individualTask2(Queue*& begin, Queue*& end, int& max_number);
 void createQueue(Queue*& begin, Queue*& end, int number);
@@ -24,14 +24,7 @@ int correctInputInt();
 int main()
 {
 	Queue* begin = NULL, * end = NULL, * max = NULL, * new_Queue = NULL, * new_Queue_end = NULL;
-	int max_number, symbol;
-	bool is_from_end = true;
-	cout << "Do you want to see queue from the start?(Y/N)" << endl;
-	symbol = _getch();
-	if (symbol == 'Y' || symbol == 'y')
-	{
-		is_from_end = false;
-	}
+	int max_number;
 	while (true)
 	{
 		int code;
@@ -77,17 +70,29 @@ int main()
 				{
 					new_Queue = individualTask2(begin, new_Queue_end, max_number);
 				}
+				cout << endl;
+				cout << "-------- From begin --------" << endl;
 				cout << "New Queue:" << endl;
-				viewQueue(new_Queue, new_Queue_end, is_from_end);
+				viewQueue(new_Queue, false);
 				cout << "Old Queue:" << endl;
-				viewQueue(begin, end, is_from_end);
+				viewQueue(begin, false);
+				cout << endl;
+				cout << "-------- From end --------" << endl;
+				cout << "New Queue:" << endl;
+				viewQueue(new_Queue_end);
+				cout << "Old Queue:" << endl;
+				viewQueue(end);
 			}
 			else
 			{
 				cout << "Bad Queue, nothing interesting!" << endl;
 			}
 			break;
-		case 5: viewQueue(begin, end, is_from_end);
+		case 5:
+			cout << "-------- From begin --------" << endl;
+			viewQueue(begin, false);
+			cout << "-------- From end --------" << endl;
+			viewQueue(end);
 			break;
 		case 6:
 			if (begin) deleteQueue(begin);
@@ -185,22 +190,22 @@ void createQueue(Queue*& begin, Queue*& end, int number)
 	end = temp;
 }
 
-Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max)
+Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max)//переделать на изменение связей
 {
 	Queue* new_Queue = NULL;
 	Queue* temp = begin->next;
-	int variable, code;
+	int variable;
 	bool first = true;
-	bool is_start = true;
-	do
-	{
-		cout << "How do you want to sort the queue? \n From the start - 1\n From the end - 2\n";
-		code = correctInputInt();
-	} while (code < 1 || code > 2);
-	if (code == 2)
-	{
-		is_start = false;
-	}
+	//bool is_start = true;
+	//do
+	//{
+		//cout << "How do you want to sort the queue? \n From the start - 1\n From the end - 2\n";
+		//code = correctInputInt();
+	//} while (code < 1 || code > 2);
+	//if (code == 2)
+	//{
+		//is_start = false;
+	//}
 	while (temp != max)
 	{
 		variable = popQueue(temp, end);
@@ -211,7 +216,7 @@ Queue* individualTask1(Queue*& begin, Queue*& end, Queue*& max)
 		}
 		else
 		{
-			pushQueue(new_Queue, end, variable, is_start);
+			pushQueue(new_Queue, end, variable, true);
 		}
 	}
 	return new_Queue;
@@ -313,7 +318,7 @@ int popQueue(Queue*& begin, Queue*& end)//по адресу
 	}
 	else
 	{
-	    temp = end;
+		temp = end;
 		end = end->prev;
 		end->next = NULL;
 		delete temp;
@@ -321,29 +326,29 @@ int popQueue(Queue*& begin, Queue*& end)//по адресу
 	return out;
 }
 
-Queue* viewQueue(Queue* begin, Queue* end, bool is_from_end)
+Queue* viewQueue(Queue* start, bool is_from_end)
 {
 	if (is_from_end)
 	{
-		if (end)
+		if (start)
 		{
-			cout << end->number << '\t';
-			end = end->prev;
-			return viewQueue(begin, end, is_from_end);
+			cout << start->number << '\t';
+			start = start->prev;
+			return viewQueue(start, is_from_end);
 		}
 	}
 	else
 	{
-		if (begin)
+		if (start)
 		{
-			cout << begin->number << '\t';
-			begin = begin->next;
-			return viewQueue(begin, end, is_from_end);
+			cout << start->number << '\t';
+			start = start->next;
+			return viewQueue(start, is_from_end);
 		}
 
 	}
 	cout << endl;
-	return begin;
+	return start;
 }
 
 void deleteQueue(Queue*& begin)//по адресу
