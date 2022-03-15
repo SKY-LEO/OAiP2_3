@@ -13,9 +13,10 @@ struct Queue
 Queue* viewQueue(Queue* start, bool is_from_end = true);
 Queue* individualTask1(Queue*& begin, Queue*& new_Queue_end, Queue*& max);
 Queue* individualTask2(Queue*& begin, Queue*& new_Queue_end, int& max_number);
+void viewAllQueues(Queue* begin, Queue* end, Queue* new_Queue, Queue* new_Queue_end);
 void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start);
 void createQueue(Queue*& begin, Queue*& end, int number);
-void deleteQueue(Queue*& begin);
+void deleteQueue(Queue*& begin, Queue*& end);
 void fillQueue(Queue*& begin, Queue*& end, bool is_new = false);
 bool isCorrectTask(Queue*& begin, Queue*& max, int& max_number);
 int popQueue(Queue*& begin, Queue*& end);
@@ -40,7 +41,7 @@ int main()
 			if (code == 1 && begin != NULL)
 			{
 				cout << "Delete previous Queue" << endl;
-				deleteQueue(begin);
+				deleteQueue(begin, end);
 			}
 			switch (code)
 			{
@@ -70,18 +71,7 @@ int main()
 				{
 					new_Queue = individualTask2(begin, new_Queue_end, max_number);
 				}
-				cout << endl;
-				cout << "-------- From begin --------" << endl;
-				cout << "New Queue:" << endl;
-				viewQueue(new_Queue, false);
-				cout << "Old Queue:" << endl;
-				viewQueue(begin, false);
-				cout << endl;
-				cout << "-------- From end --------" << endl;
-				cout << "New Queue:" << endl;
-				viewQueue(new_Queue_end);
-				cout << "Old Queue:" << endl;
-				viewQueue(end);
+				viewAllQueues(begin, end, new_Queue, new_Queue_end);
 			}
 			else
 			{
@@ -89,19 +79,16 @@ int main()
 			}
 			break;
 		case 5:
-			cout << "-------- From begin --------" << endl;
-			viewQueue(begin, false);
-			cout << "-------- From end --------" << endl;
-			viewQueue(end);
+			viewAllQueues(begin, end, new_Queue, new_Queue_end);
 			break;
 		case 6:
-			if (begin) deleteQueue(begin);
-			if (new_Queue) deleteQueue(new_Queue);
+			if (begin) deleteQueue(begin, end);
+			if (new_Queue) deleteQueue(new_Queue, new_Queue_end);
 			break;
 		case 0:
 			cout << "Safe exit..." << endl;
-			if (begin) deleteQueue(begin);
-			if (new_Queue) deleteQueue(new_Queue);
+			if (begin) deleteQueue(begin, end);
+			if (new_Queue) deleteQueue(new_Queue, new_Queue_end);
 			system("pause");
 			return 0;
 		}
@@ -305,6 +292,50 @@ int popQueue(Queue*& begin, Queue*& end)//по адресу
 	return out;
 }
 
+void viewAllQueues(Queue* begin, Queue* end, Queue* new_Queue, Queue* new_Queue_end)
+{
+	cout << endl;
+	cout << "-------- From begin --------" << endl;
+	cout << "New Queue:" << endl;
+	if (new_Queue)
+	{
+		viewQueue(new_Queue, false);
+	}
+	else
+	{
+		cout << "Doesn't exist!" << endl;
+	}
+	cout << "Old Queue:" << endl;
+	if (begin)
+	{
+		viewQueue(begin, false);
+	}
+	else
+	{
+		cout << "Doesn't exist!" << endl;
+	}
+	cout << endl;
+	cout << "-------- From end --------" << endl;
+	cout << "New Queue:" << endl;
+	if (new_Queue_end)
+	{
+		viewQueue(new_Queue_end);
+	}
+	else
+	{
+		cout << "Doesn't exist!" << endl;
+	}
+	cout << "Old Queue:" << endl;
+	if (end)
+	{
+		viewQueue(end);
+	}
+	else
+	{
+		cout << "Doesn't exist!" << endl;
+	}
+}
+
 Queue* viewQueue(Queue* start, bool is_from_end)
 {
 	if (is_from_end)
@@ -330,7 +361,7 @@ Queue* viewQueue(Queue* start, bool is_from_end)
 	return start;
 }
 
-void deleteQueue(Queue*& begin)//по адресу
+void deleteQueue(Queue*& begin, Queue*& end)//по адресу
 {
 	while (begin)
 	{
@@ -338,6 +369,7 @@ void deleteQueue(Queue*& begin)//по адресу
 		begin = begin->next;
 		delete temp;
 	}
+	end = NULL;
 	cout << "Queue deleted succesfully" << endl;
 }
 
