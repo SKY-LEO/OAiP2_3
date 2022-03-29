@@ -11,29 +11,27 @@ struct Queue
 };
 
 Queue* viewQueue(Queue* start, bool is_from_end = true);
-Queue* individualTask1(Queue*& begin, Queue*& new_Queue_end, Queue*& max);
-Queue* individualTask2(Queue*& begin, Queue*& new_Queue_end, int& max_number);
+Queue* individualTask(Queue*& begin, Queue*& new_Queue_end, Queue*& max);
 void viewAllQueues(Queue* begin, Queue* end, Queue* new_Queue, Queue* new_Queue_end);
 void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start);
 void createQueue(Queue*& begin, Queue*& end, int number);
 void deleteQueue(Queue*& begin, Queue*& end);
 void fillQueue(Queue*& begin, Queue*& end, bool is_new = false);
-bool isCorrectTask(Queue*& begin, Queue*& max, int& max_number);
+bool isCorrectTask(Queue*& begin, Queue*& max);
 int popQueue(Queue*& begin, Queue*& end);
 int correctInputInt();
 
 int main()
 {
 	Queue* begin = NULL, * end = NULL, * max = NULL, * new_Queue = NULL, * new_Queue_end = NULL;
-	int max_number;
+	int code;
 	while (true)
 	{
-		int code;
 		do
 		{
-			cout << "\n Create - 1\n Add - 2\n Individual task_variant1 - 3\n Individual task_variant2 - 4\n View Queue - 5\n Delete Queue - 6\n EXIT - 0\n";
+			cout << "\n Create - 1\n Add - 2\n Individual task - 3\n View Queue - 4\n Delete Queue - 5\n EXIT - 0\n";
 			code = correctInputInt();
-		} while (code < 0 || code > 6);
+		} while (code < 0 || code > 5);
 		switch (code)
 		{
 		case 1:
@@ -60,17 +58,9 @@ int main()
 				continue;
 			}
 		case 3:
-		case 4:
-			if (isCorrectTask(begin, max, max_number))
+			if (isCorrectTask(begin, max))
 			{
-				if (code == 3)
-				{
-					new_Queue = individualTask1(begin, new_Queue_end, max);
-				}
-				else
-				{
-					new_Queue = individualTask2(begin, new_Queue_end, max_number);
-				}
+				new_Queue = individualTask(begin, new_Queue_end, max);
 				viewAllQueues(begin, end, new_Queue, new_Queue_end);
 			}
 			else
@@ -78,10 +68,10 @@ int main()
 				cout << "Bad Queue, nothing interesting!" << endl;
 			}
 			break;
-		case 5:
+		case 4:
 			viewAllQueues(begin, end, new_Queue, new_Queue_end);
 			break;
-		case 6:
+		case 5:
 			if (begin) deleteQueue(begin, end);
 			if (new_Queue) deleteQueue(new_Queue, new_Queue_end);
 			break;
@@ -177,7 +167,7 @@ void createQueue(Queue*& begin, Queue*& end, int number)
 	end = temp;
 }
 
-Queue* individualTask1(Queue*& begin, Queue*& new_Queue_end, Queue*& max)//переделать на изменение связей
+Queue* individualTask(Queue*& begin, Queue*& new_Queue_end, Queue*& max)
 {
 	Queue* new_Queue = begin->next;
 	new_Queue->prev = NULL;
@@ -188,39 +178,7 @@ Queue* individualTask1(Queue*& begin, Queue*& new_Queue_end, Queue*& max)//перед
 	return new_Queue;
 }
 
-Queue* individualTask2(Queue*& begin, Queue*& new_Queue_end, int& max_number)
-{
-	Queue* new_Queue = NULL;
-	Queue* temp = begin->next;
-	int variable, code;
-	bool first = true;
-	bool is_start = true;
-	do
-	{
-		cout << "How do you want to sort the queue? \n From the start - 1\n From the end - 2\n";
-		code = correctInputInt();
-	} while (code < 1 || code > 2);
-	if (code == 2)
-	{
-		is_start = false;
-	}
-	while (temp->number < max_number)
-	{
-		variable = popQueue(temp, new_Queue_end);
-		if (first)
-		{
-			createQueue(new_Queue, new_Queue_end, variable);
-			first = false;
-		}
-		else
-		{
-			pushQueue(new_Queue, new_Queue_end, variable, is_start);
-		}
-	}
-	return new_Queue;
-}
-
-bool isCorrectTask(Queue*& begin, Queue*& max, int& max_number)
+bool isCorrectTask(Queue*& begin, Queue*& max)
 {
 	if (begin == NULL)
 	{
@@ -238,8 +196,7 @@ bool isCorrectTask(Queue*& begin, Queue*& max, int& max_number)
 		temp = temp->next;
 		i++;
 	}
-	max_number = max->number;
-	cout << "MAX " << max_number << endl;
+	cout << "MAX " << max->number << endl;
 	if (max == begin || max == begin->next || i < 3)
 	{
 		return false;
@@ -370,7 +327,7 @@ void deleteQueue(Queue*& begin, Queue*& end)//по адресу
 		delete temp;
 	}
 	end = NULL;
-	cout << "Queue deleted succesfully" << endl;
+	cout << "Queue deleted successfully" << endl;
 }
 
 int correctInputInt()
