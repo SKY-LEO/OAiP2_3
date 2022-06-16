@@ -1,3 +1,7 @@
+/*
+* Перенести из созданной очереди в новую очередь все элементы, находящиеся между вершиной и максимальным элементом.
+*/
+
 #include <iostream>
 #include <ctime>
 #include <conio.h>
@@ -16,9 +20,8 @@ void viewAllQueues(Queue* begin, Queue* end, Queue* new_Queue, Queue* new_Queue_
 void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start);
 void createQueue(Queue*& begin, Queue*& end, int number);
 void deleteQueue(Queue*& begin, Queue*& end);
-void fillQueue(Queue*& begin, Queue*& end, bool is_new = false);
+void fillQueue(Queue*& begin, Queue*& end);
 bool isCorrectTask(Queue*& begin, Queue*& max);
-int popQueue(Queue*& begin, Queue*& end);
 int correctInputInt();
 
 int main()
@@ -27,11 +30,22 @@ int main()
 	int code;
 	while (true)
 	{
-		do
+		if (begin == NULL)
 		{
-			cout << "\n Create - 1\n Add - 2\n Individual task - 3\n View Queue - 4\n Delete Queue - 5\n EXIT - 0\n";
-			code = correctInputInt();
-		} while (code < 0 || code > 5);
+			do
+			{
+				cout << "\n Create - 1\n EXIT - 0\n";
+				code = correctInputInt();
+			} while (code < 0 || code > 1);
+		}
+		else
+		{
+			do
+			{
+				cout << "\n Create - 1\n Add - 2\n Individual task - 3\n View Queue - 4\n Delete Queue - 5\n EXIT - 0\n";
+				code = correctInputInt();
+			} while (code < 0 || code > 5);
+		}
 		switch (code)
 		{
 		case 1:
@@ -43,7 +57,8 @@ int main()
 			}
 			switch (code)
 			{
-			case 1: fillQueue(begin, end, true);
+			case 1:
+				fillQueue(begin, end);
 				continue;
 			case 2:
 				if (begin)
@@ -53,7 +68,7 @@ int main()
 				else
 				{
 					cout << "There is no queue! Created new" << endl;
-					fillQueue(begin, end, true);
+					fillQueue(begin, end);
 				}
 				continue;
 			}
@@ -85,7 +100,7 @@ int main()
 	}
 }
 
-void fillQueue(Queue*& begin, Queue*& end, bool is_new)
+void fillQueue(Queue*& begin, Queue*& end)
 {
 	int n, number, code, temp, i = 0;
 	bool is_start = true;
@@ -128,7 +143,7 @@ void fillQueue(Queue*& begin, Queue*& end, bool is_new)
 			min = max;
 			max = variable;
 		}
-		if (is_new)
+		if (begin == NULL)
 		{
 			number = rand() % (max - min + 1) + min;
 			createQueue(begin, end, number);
@@ -142,7 +157,7 @@ void fillQueue(Queue*& begin, Queue*& end, bool is_new)
 	}
 	else
 	{
-		if (is_new)
+		if (begin == NULL)
 		{
 			cout << "Enter number: " << endl;
 			number = correctInputInt();
@@ -227,28 +242,6 @@ void pushQueue(Queue*& begin, Queue*& end, int number, bool is_start)
 	}
 }
 
-int popQueue(Queue*& begin, Queue*& end)//по адресу
-{
-	Queue* temp;
-	int out;
-	out = begin->number;
-	if (begin != end)
-	{
-		temp = begin;
-		(begin->next)->prev = begin->prev;
-		begin = (begin->prev)->next = begin->next;
-		delete temp;
-	}
-	else
-	{
-		temp = end;
-		end = end->prev;
-		end->next = NULL;
-		delete temp;
-	}
-	return out;
-}
-
 void viewAllQueues(Queue* begin, Queue* end, Queue* new_Queue, Queue* new_Queue_end)
 {
 	cout << endl;
@@ -318,7 +311,7 @@ Queue* viewQueue(Queue* start, bool is_from_end)
 	return start;
 }
 
-void deleteQueue(Queue*& begin, Queue*& end)//по адресу
+void deleteQueue(Queue*& begin, Queue*& end)
 {
 	while (begin)
 	{
@@ -342,7 +335,7 @@ int correctInputInt()
 		else
 		{
 			cin.clear();
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cin.ignore(256, '\n');
 			cout << "Error, please write INT numbers!\n" << "Try again!" << endl;
 		}
 	}
