@@ -184,13 +184,13 @@ void createQueue(Queue*& begin, Queue*& end, int number)
 
 Queue* individualTask(Queue*& begin, Queue*& new_Queue_end, Queue*& max)
 {
-	Queue* new_Queue = begin->next;
-	new_Queue->prev = NULL;
+	Queue* new_Queue_begin = begin->next;
+	new_Queue_begin->prev = NULL;
 	begin->next = max;
 	new_Queue_end = max->prev;
 	new_Queue_end->next = NULL;
 	max->prev = begin;
-	return new_Queue;
+	return new_Queue_begin;
 }
 
 bool isCorrectTask(Queue*& begin, Queue*& max)
